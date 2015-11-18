@@ -1,0 +1,11 @@
+Filename    n answer 
+P1eg1.txt:  12   5 
+P1eg2.txt:  5    1
+P1eg3.txt:  8    2
+P1eg4.txt:  10   4
+P1eg5.txt:  15   7
+P1eg6.txt:  20   4
+P1eg7.txt:  50   13
+P1eg8.txt:  100  18
+P1eg9.txt:  400  75
+P1eg10.txt: 1000 71

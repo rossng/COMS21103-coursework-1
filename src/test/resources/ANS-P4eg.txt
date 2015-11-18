@@ -1,0 +1,11 @@
+Filename:   n    answer 
+P4eg1.txt:  4    19 
+P4eg2.txt:  5    25
+P4eg3.txt:  8    36
+P4eg4.txt:  10   105
+P4eg5.txt:  15   45
+P4eg6.txt:  20   219
+P4eg7.txt:  50   735
+P4eg8.txt:  100  1503
+P4eg9.txt:  400  20571
+P4eg10.txt: 1000 349

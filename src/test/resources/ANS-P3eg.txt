@@ -1,0 +1,11 @@
+Filename:   n    answer 
+P3eg1.txt:  10   188 
+P3eg2.txt:  6    42
+P3eg3.txt:  8    77
+P3eg4.txt:  10   46
+P3eg5.txt:  15   181
+P3eg6.txt:  20   712
+P3eg7.txt:  50   1054
+P3eg8.txt:  100  230
+P3eg9.txt:  400  4791096
+P3eg10.txt: 1000 31762
