@@ -20,15 +20,12 @@ public class DSAP1 {
                 MatrixLoader loader = new MatrixLoader();
                 int largestEmptySquare = calculator.getLargestEmptySquare(loader.deserializeMatrix(input));
                 System.out.print(largestEmptySquare);
-                System.exit(0);
             } catch (IOException e) {
                 System.err.println("Could not open file.");
                 System.err.println(e.getMessage());
-                System.exit(1);
             } catch (ParseException e) {
                 System.err.println("Could not parse the file.");
                 System.err.println(e.getMessage());
-                System.exit(2);
             }
         }
     }
@@ -65,6 +62,9 @@ public class DSAP1 {
         }
     }
 
+    /**
+     * Print usage instructions for the program.
+     */
     private static void printUsage() {
         System.out.println("usage:");
         System.out.println("       dsap1 -r <filename>");
@@ -134,7 +134,7 @@ interface LargestEmptySquareCalculator {
     public int getLargestEmptySquare(boolean[][] matrix);
 }
 
-class Utils {
+class DSAP1Utils {
     /**
      * Get the smallest int int from a vararg list of ints.
      * @param ints The ints to search for the smallest value.
@@ -180,7 +180,7 @@ class RecursiveLargestEmptySquareCalculator implements LargestEmptySquareCalcula
         } else if (x == 0 || y == 0) {
             return 1;
         } else {
-            return Utils.min(
+            return DSAP1Utils.min(
                     les(matrix, x-1, y-1),
                     les(matrix, x-1, y),
                     les(matrix, x, y-1)
@@ -210,7 +210,7 @@ class MemoizedLargestEmptySquareCalculator implements LargestEmptySquareCalculat
         } else if (x == 0 || y == 0) {
             return 1;
         } else if (memory[y][x] == null) {
-            memory[y][x] = Utils.min(
+            memory[y][x] = DSAP1Utils.min(
                     les(matrix, x-1, y-1, memory),
                     les(matrix, x-1, y, memory),
                     les(matrix, x, y-1, memory)
@@ -222,6 +222,27 @@ class MemoizedLargestEmptySquareCalculator implements LargestEmptySquareCalculat
 
 class IterativeLargestEmptySquareCalculator implements LargestEmptySquareCalculator {
     public int getLargestEmptySquare(boolean[][] matrix) {
-        return 0;
+        Integer[][] memory = new Integer[matrix.length][matrix.length];
+        int largestEmptySquare = 0;
+        for (int y = 0; y < matrix.length; y++) {
+            for (int x = 0; x < matrix[0].length; x++) {
+                if (matrix[y][x]) {
+                    memory[y][x] = 0;
+                } else if (x == 0 || y == 0) {
+                    memory[y][x] = 1;
+                } else {
+                    memory[y][x] = DSAP1Utils.min(
+                            memory[y-1][x-1],
+                            memory[y][x-1],
+                            memory[y-1][x]
+                    ) + 1;
+                }
+
+                if (memory[y][x] > largestEmptySquare) {
+                    largestEmptySquare = memory[y][x];
+                }
+            }
+        }
+        return largestEmptySquare;
     }
 }
