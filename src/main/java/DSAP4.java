@@ -7,10 +7,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class DSAP4 {
     public static void main(String[] args) {
@@ -193,13 +190,109 @@ class RecursiveMostSandwichesDeliverableCalculator implements MostSandwichesDeli
 }
 
 class MemoizedMostSandwichesDeliverableCalculator implements MostSandwichesDeliverableCalculator {
-    public int getMostSandwichesDeliverable(List<Integer> forecast, List<Integer> sandwichDeliveryMaxima) {
-        return 0;
+    public int getMostSandwichesDeliverable(List<Integer> sandwichOrders, List<Integer> sandwichDeliveryMaxima) {
+        Integer[][] memory = new Integer[sandwichOrders.size()][sandwichOrders.size() + 1];
+        return sandwiches(1, sandwichOrders.size(), 0, sandwichOrders, sandwichDeliveryMaxima, memory);
+    }
+
+    private int sandwiches(int fromDay, int toDay, int startingRunLength, List<Integer> sandwichOrders, List<Integer> sandwichDeliveryMaxima, Integer[][] memory) {
+        if (fromDay > toDay) return 0;
+        else if (fromDay == toDay) return DSAP4Utils.min(
+                sandwichOrders.get(fromDay - 1),
+                sandwichDeliveryMaxima.get(startingRunLength)
+        );
+        else if (startingRunLength == 0) {
+            if (memory[fromDay][1] == null) memory[fromDay][1] = sandwiches(fromDay + 1, toDay, 1, sandwichOrders, sandwichDeliveryMaxima, memory);
+
+            return DSAP4Utils.min(
+                    sandwichOrders.get(fromDay - 1),
+                    sandwichDeliveryMaxima.get(0)
+            ) + memory[fromDay][1];
+        }
+        else {
+            if (memory[fromDay][startingRunLength + 1] == null)
+                memory[fromDay][startingRunLength + 1] =
+                        sandwiches(fromDay + 1, toDay, startingRunLength + 1, sandwichOrders, sandwichDeliveryMaxima, memory);
+
+            if (memory[fromDay][0] == null)
+                memory[fromDay][0] = sandwiches(fromDay + 1, toDay, 0, sandwichOrders, sandwichDeliveryMaxima, memory);
+
+            return DSAP4Utils.max(
+                    DSAP4Utils.min(
+                            sandwichOrders.get(fromDay - 1),
+                            sandwichDeliveryMaxima.get(startingRunLength)
+                    ) + memory[fromDay][startingRunLength + 1],
+                    memory[fromDay][0]
+            );
+        }
     }
 }
 
 class IterativeMostSandwichesDeliverableCalculator implements MostSandwichesDeliverableCalculator {
-    public int getMostSandwichesDeliverable(List<Integer> forecast, List<Integer> sandwichDeliveryMaxima) {
-        return 0;
+    public int getMostSandwichesDeliverable(List<Integer> sandwichOrders, List<Integer> sandwichDeliveryMaxima) {
+        //return sandwiches(1, sandwichOrders.size(), 0, sandwichOrders, sandwichDeliveryMaxima, 0);
+        return sandwichesIterative(1, sandwichOrders.size(), 0, sandwichOrders, sandwichDeliveryMaxima);
+    }
+
+    private int sandwiches(int fromDay, int toDay, int startingRunLength, List<Integer> sandwichOrders, List<Integer> sandwichDeliveryMaxima, int acc) {
+        if (fromDay > toDay) return acc;
+        else if (fromDay == toDay) return acc + DSAP4Utils.min(
+                sandwichOrders.get(fromDay - 1),
+                sandwichDeliveryMaxima.get(startingRunLength)
+        );
+        else if (startingRunLength == 0)
+            return sandwiches(fromDay + 1, toDay, 1, sandwichOrders, sandwichDeliveryMaxima, acc + DSAP4Utils.min(
+                    sandwichOrders.get(fromDay - 1),
+                    sandwichDeliveryMaxima.get(0)
+            ));
+        else return DSAP4Utils.max(
+                    sandwiches(fromDay + 1, toDay, startingRunLength + 1, sandwichOrders, sandwichDeliveryMaxima, acc + DSAP4Utils.min(
+                            sandwichOrders.get(fromDay - 1),
+                            sandwichDeliveryMaxima.get(startingRunLength)
+                    )),
+                    sandwiches(fromDay + 1, toDay, 0, sandwichOrders, sandwichDeliveryMaxima, acc)
+            );
+    }
+
+    private int sandwichesIterative(int fromDay, int toDay, int startingRunLength, List<Integer> sandwichOrders, List<Integer> sandwichDeliveryMaxima) {
+        int acc = 0;
+
+        while (true) {
+            if (fromDay > toDay) return acc;
+            else if (fromDay == toDay) return acc + DSAP4Utils.min(
+                    sandwichOrders.get(fromDay - 1),
+                    sandwichDeliveryMaxima.get(startingRunLength)
+            );
+            else if (startingRunLength == 0) {
+                acc += DSAP4Utils.min(
+                        sandwichOrders.get(fromDay - 1),
+                        sandwichDeliveryMaxima.get(0)
+                );
+                fromDay += 1;
+                startingRunLength = 1;
+                continue;
+            }
+            else {
+                int res1 =
+                        sandwichesIterative(fromDay + 1, toDay, startingRunLength + 1, sandwichOrders, sandwichDeliveryMaxima) + DSAP4Utils.min(
+                                sandwichOrders.get(fromDay - 1),
+                                sandwichDeliveryMaxima.get(startingRunLength)
+                        );
+                int res2 =
+                        sandwichesIterative(fromDay + 1, toDay, 0, sandwichOrders, sandwichDeliveryMaxima);
+
+                if (res1 > res2) {
+                    acc += DSAP4Utils.min(
+                            sandwichOrders.get(fromDay - 1),
+                            sandwichDeliveryMaxima.get(startingRunLength));
+                    fromDay += 1;
+                    startingRunLength += 1;
+                    continue;
+                } else {
+                    fromDay += 1;
+                    startingRunLength = 0;
+                }
+            }
+        }
     }
 }

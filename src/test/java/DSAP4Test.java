@@ -87,4 +87,42 @@ public class DSAP4Test {
         testWithFlag(pathToAnswerMap, "-r");
         testWithFlag(pathToAnswerMap, "--recursive");
     }
+
+    @Test
+    public void testDSAP4Memoized() throws URISyntaxException {
+        Map<String, String> pathToAnswerMap = new HashMap<>();
+
+        pathToAnswerMap.put("/P4eg1.txt", "19");
+        pathToAnswerMap.put("/P4eg2.txt", "25");
+        pathToAnswerMap.put("/P4eg3.txt", "36");
+        pathToAnswerMap.put("/P4eg4.txt", "105");
+        pathToAnswerMap.put("/P4eg5.txt", "45");
+        pathToAnswerMap.put("/P4eg6.txt", "219");
+        pathToAnswerMap.put("/P4eg7.txt", "735");
+        pathToAnswerMap.put("/P4eg8.txt", "1503");
+        pathToAnswerMap.put("/P4eg9.txt", "20571");
+        pathToAnswerMap.put("/P4eg10.txt", "349");
+
+        testWithFlag(pathToAnswerMap, "-m");
+        testWithFlag(pathToAnswerMap, "--memoized");
+    }
+
+    @Test
+    public void testDSAP4Iterative() throws URISyntaxException {
+        Map<String, String> pathToAnswerMap = new HashMap<>();
+
+        pathToAnswerMap.put("/P4eg1.txt", "19");
+        pathToAnswerMap.put("/P4eg2.txt", "25");
+        pathToAnswerMap.put("/P4eg3.txt", "36");
+        pathToAnswerMap.put("/P4eg4.txt", "105");
+        pathToAnswerMap.put("/P4eg5.txt", "45");
+        pathToAnswerMap.put("/P4eg6.txt", "219");
+        pathToAnswerMap.put("/P4eg7.txt", "735");
+        pathToAnswerMap.put("/P4eg8.txt", "1503");
+        pathToAnswerMap.put("/P4eg9.txt", "20571");
+        pathToAnswerMap.put("/P4eg10.txt", "349");
+
+        testWithFlag(pathToAnswerMap, "-i");
+        testWithFlag(pathToAnswerMap, "--iterative");
+    }
 }
