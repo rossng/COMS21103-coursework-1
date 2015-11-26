@@ -1,0 +1,113 @@
+\documentclass[]{article}
+\usepackage[margin=1.0in]{geometry}
+\usepackage{amsmath}
+
+%opening
+\title{COMS21103 - Coursework 1}
+\author{Ross Gardiner}
+
+\begin{document}
+
+\maketitle
+
+\begin{itemize}
+	\item [2 a)] 
+		$$
+			\textsc{P}[i, x] =
+			\begin{cases}
+				0 & \text{if } i = 0 \\
+				max(P[i-1, s] - m, P[i-1, u]) + U[i] & \text{if } x = u \\
+				max(P[i-1, s], P[i-1, u] - m) + S[i] & \text{if } x = s \\
+			\end{cases}
+		$$
+	
+	\item [2 b)] 
+		The correctness of this formula can be shown by induction. Informally, after 0 days, the profit must be 0. After $>0$ days, the profit will be the $(\text{max profit from the current day}) + \text{(the profit from the previous days)}.$
+	
+		The scenario in which a greedy algorithm would fail is where it has to choose whether to switch or stick without knowing the future impact of that decision. 
+	
+		Because the recursive algorithm relies on the pre-calculated maximum prior profit, it will only switch stock if the switch increases takings by at least the cost of switching plus the takings from the other stock type. As a result, it will never end up in a situation where it switches stock inefficiently.
+		
+	\item [2 f)]
+		TODO
+		
+	\item [2 a)]
+		$\textsc{Magic-Tournament}[magician] = 
+			\textsc{Maximum} \: 
+				\big[ \textsc{M}[magician, true], \: \textsc{M}[magician, false] \big] $ \\
+		(where $magician$ is the head magician)
+				
+		Let: \\ 
+			$m \equiv \text{root magician of some subtree}$ \\
+			$s \equiv \text{is the root magician included?}$ \\
+		
+		Using Haskell-ish notation:
+		$$
+			\textsc{M}[m, s] =
+			\begin{cases}
+				(\textsc{Fold} \: 
+					(+) \: 
+					(\textsc{Map} \: 
+						(a \mapsto \textsc{M}[a, false]) \:
+						m.apprentices)) + m.ability
+				& \text{if } s \\
+				\textsc{Fold} \:
+					(+) \:
+					(\textsc{Map} \: 
+						(a \mapsto 
+							(\textsc{Maximum} \: \big[ \textsc{M}[a, true], \: \textsc{M}[a, false] \big] )) \:
+						m.apprentices) 
+				& \text{if } \neg s \\
+			\end{cases}
+		$$
+		
+	\item [2 b)] The algorithm explores every possibility. Each magician in the tree is at the root of his own tree---possibly empty. \textsc{M} can be called such that it either includes the root magician or excludes the root magician. In the former case, all of the apprentices must be excluded. In the latter case, the algorithm finds the maximum result from either including or excluding each apprentice.
+	
+	At the root of the tree, we try calling \textsc{M} both including and excluding the head magician, and pick the highest result.
+	
+	\item [2 f)] TODO
+	
+	\item [4 a)] 
+	
+		Let: \\ 
+		$\textsc{S}[d, r]$ returns a tuple of:
+		\begin{itemize}
+			\item The most number of sandwiches legally deliverable by the end of day $d$ (where $d: \text{int}$), given whether the last day is a rest day (indicated by $r$, where $r: \text{bool}$).
+			\item The length of the contiguous run of non-rest days up to and including day $d$.
+		\end{itemize}
+		
+		N.B. The notation $(\_, \_, ..., \_)_n$ retrieves the nth item of a tuple. For example, $(52, 74)_2 = 74$.
+		
+		$$
+		\textsc{S}[d, r] =
+		\begin{cases}
+			(0,0)
+			& \text{if } d = 0 \\
+		
+			(\textsc{S}[d-1, false]_1, 0)
+			& \text{if } r \\
+			
+			(( \textsc{Min} \: \big[ \\
+			\hspace{1em} M[S[d-1,true]_2+1], B[d] \big]) \\ 
+			\hspace{1em} + S[d-1,true]_1, \\
+			 S[d-1, true]_2 + 1)
+			& \text{if } \neg \: r \land \\
+			& (\textsc{Min} \: \big[ M[S[d-1,true]_2+1], B[d] \big]) + S[d-1,true]_1 > \\
+			& (\textsc{Min} \: \big[ M[1], B[d] \big]) + S[d-1, false]_1 \\
+			
+			(\textsc{Min} \: \big[ M[1], B[d] \big] + S[d-1,false]_1, 1 )
+			& \text{otherwise}
+		\end{cases}
+		$$
+		
+	\item [4 b)] TODO
+	
+	\item [4 c)] TODO
+	
+	\item [4 f)] TODO
+	
+	\item [4 h)] TODO
+	
+\end{itemize}
+
+\end{document}

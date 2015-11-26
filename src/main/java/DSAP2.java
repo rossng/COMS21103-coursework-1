@@ -227,12 +227,53 @@ class RecursiveMaximumCornerShopProfitCalculator implements MaximumCornerShopPro
 
 class MemoizedMaximumCornerShopProfitCalculator implements MaximumCornerShopProfitCalculator {
     public int getMaxProfit(ProfitForecast forecast) {
-        return 0;
+        Integer[][] memory = new Integer[forecast.metadata.numberOfDays][2];
+
+        return DSAP2Utils.max(
+                p(forecast.metadata.numberOfDays, Item.UMBRELLA, forecast, memory),
+                p(forecast.metadata.numberOfDays, Item.SUNCREAM, forecast, memory)
+        );
+    }
+
+    private int p(int days, Item finishOnItem, ProfitForecast forecast, Integer[][] memory) {
+        if (days == 0) return 0;
+
+        else if (days > 0) switch (finishOnItem) {
+            case UMBRELLA:
+                // Cache the result of the recursive call
+                if (memory[days - 1][0] == null) {
+                    memory[days - 1][0] = DSAP2Utils.max(
+                            p(days - 1, Item.SUNCREAM, forecast, memory) - forecast.metadata.stockChangeCost,
+                            p(days - 1, Item.UMBRELLA, forecast, memory)
+                    ) + forecast.umbrellaProfitForecast.get(days - 1);
+                }
+                // Return the result from cache
+                return memory[days - 1][0];
+            case SUNCREAM:
+                // Cache the result of the recursive call
+                if (memory[days - 1][1] == null) {
+                    memory[days - 1][1] = DSAP2Utils.max(
+                            p(days - 1, Item.SUNCREAM, forecast, memory),
+                            p(days - 1, Item.UMBRELLA, forecast, memory) - forecast.metadata.stockChangeCost
+                    ) + forecast.suncreamProfitForecast.get(days - 1);
+                }
+                // Return the result from cache
+                return memory[days - 1][1];
+        }
+
+        throw new IllegalArgumentException("Expected days >= 1, found " + days);
     }
 }
 
 class IterativeMaximumCornerShopProfitCalculator implements MaximumCornerShopProfitCalculator {
     public int getMaxProfit(ProfitForecast forecast) {
+        return DSAP2Utils.max(
+                p(forecast.metadata.numberOfDays, Item.UMBRELLA, forecast),
+                p(forecast.metadata.numberOfDays, Item.SUNCREAM, forecast)
+        );
+    }
+
+    private int p(int days, Item finishOnItem, ProfitForecast forecast) {
         return 0;
     }
 }

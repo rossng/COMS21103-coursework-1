@@ -82,7 +82,6 @@ public class DSAP2Test {
         pathToAnswerMap.put("/P2eg3.txt", "62");
         pathToAnswerMap.put("/P2eg4.txt", "31");
 
-
         testWithFlag(pathToAnswerMap, "-r");
         testWithFlag(pathToAnswerMap, "--recursive");
     }
@@ -91,16 +90,16 @@ public class DSAP2Test {
     public void testDSAP2Memoized() throws URISyntaxException {
         Map<String, String> pathToAnswerMap = new HashMap<>();
 
-        pathToAnswerMap.put("/P2eg1.txt", "0");
-        pathToAnswerMap.put("/P2eg2.txt", "0");
-        pathToAnswerMap.put("/P2eg3.txt", "0");
-        pathToAnswerMap.put("/P2eg4.txt", "0");
-        pathToAnswerMap.put("/P2eg5.txt", "0");
-        pathToAnswerMap.put("/P2eg6.txt", "0");
-        pathToAnswerMap.put("/P2eg7.txt", "0");
-        pathToAnswerMap.put("/P2eg8.txt", "0");
-        pathToAnswerMap.put("/P2eg9.txt", "0");
-        pathToAnswerMap.put("/P2eg10.txt", "0");
+        pathToAnswerMap.put("/P2eg1.txt", "80");
+        pathToAnswerMap.put("/P2eg2.txt", "24");
+        pathToAnswerMap.put("/P2eg3.txt", "62");
+        pathToAnswerMap.put("/P2eg4.txt", "31");
+        pathToAnswerMap.put("/P2eg5.txt", "87");
+        pathToAnswerMap.put("/P2eg6.txt", "209");
+        pathToAnswerMap.put("/P2eg7.txt", "970");
+        pathToAnswerMap.put("/P2eg8.txt", "1207");
+        pathToAnswerMap.put("/P2eg9.txt", "24298");
+        pathToAnswerMap.put("/P2eg10.txt", "78987");
 
 
         testWithFlag(pathToAnswerMap, "-m");
