@@ -169,59 +169,26 @@ interface MostSandwichesDeliverableCalculator {
 
 class RecursiveMostSandwichesDeliverableCalculator implements MostSandwichesDeliverableCalculator {
     public int getMostSandwichesDeliverable(List<Integer> sandwichOrders, List<Integer> sandwichDeliveryMaxima) {
-        return sandwiches(sandwichOrders.size(), true, sandwichOrders, sandwichDeliveryMaxima).numberSandwichesDelivered;
+        return sandwiches(1, sandwichOrders.size(), 0, sandwichOrders, sandwichDeliveryMaxima);
     }
 
-    private SandwichResult sandwiches(int byDay, boolean deliveringOnLastDay, List<Integer> sandwichOrders, List<Integer> sandwichDeliveryMaxima) {
-
-        if (byDay == 0) return new SandwichResult(0, 0);
-
-        SandwichResult resultByPreviousDayIfDeliveringOnLastDay = sandwiches(byDay - 1, true, sandwichOrders, sandwichDeliveryMaxima);
-        SandwichResult resultByPreviousDayIfNotDeliveringOnLastDay = sandwiches(byDay - 1, false, sandwichOrders, sandwichDeliveryMaxima);
-
-        assert  resultByPreviousDayIfDeliveringOnLastDay.numberSandwichesDelivered >= resultByPreviousDayIfNotDeliveringOnLastDay.numberSandwichesDelivered;
-
-        // if delivering today
-        if (deliveringOnLastDay) {
-            // get the number of sandwiches that would be delivered by today if there was a delivery yesterday
-            int totalIfWasDeliveryYesterday =
+    private int sandwiches(int fromDay, int toDay, int startingRunLength, List<Integer> sandwichOrders, List<Integer> sandwichDeliveryMaxima) {
+        if (fromDay > toDay) return 0;
+        else if (fromDay == toDay) return DSAP4Utils.min(
+                sandwichOrders.get(fromDay - 1),
+                sandwichDeliveryMaxima.get(startingRunLength)
+        );
+        else if (startingRunLength == 0) return DSAP4Utils.min(
+                sandwichOrders.get(fromDay - 1),
+                sandwichDeliveryMaxima.get(0)
+        ) + sandwiches(fromDay + 1, toDay, 1, sandwichOrders, sandwichDeliveryMaxima);
+        else return DSAP4Utils.max(
                     DSAP4Utils.min(
-                            sandwichDeliveryMaxima.get(resultByPreviousDayIfDeliveringOnLastDay.finalRunLength),
-                            sandwichOrders.get(byDay - 1)
-                    ) + resultByPreviousDayIfDeliveringOnLastDay.numberSandwichesDelivered;
-
-            // get the number of sandwiches that would be delivered by today if there was no delivery yesterday
-            int totalIfNoDeliveryYesterday =
-                    DSAP4Utils.min(
-                            sandwichDeliveryMaxima.get(0),
-                            sandwichOrders.get(byDay - 1)
-                    ) + resultByPreviousDayIfNotDeliveringOnLastDay.numberSandwichesDelivered;
-
-            if (totalIfWasDeliveryYesterday > totalIfNoDeliveryYesterday) {
-                // if the result of having a delivery yesterday is higher, increment the run length
-                return new SandwichResult(resultByPreviousDayIfDeliveringOnLastDay.finalRunLength + 1, totalIfWasDeliveryYesterday);
-            } else {
-                // otherwise reset the run length to 1 (just delivering on the last day)
-                return new SandwichResult(1, totalIfNoDeliveryYesterday);
-            }
-        } else {
-            // if not delivering today, total number of sandwiches by today is the number delivered if there was a
-            // delivery yesterday
-
-            return new SandwichResult(
-                    0,
-                    resultByPreviousDayIfDeliveringOnLastDay.numberSandwichesDelivered
+                            sandwichOrders.get(fromDay - 1),
+                            sandwichDeliveryMaxima.get(startingRunLength)
+                    ) + sandwiches(fromDay + 1, toDay, startingRunLength + 1, sandwichOrders, sandwichDeliveryMaxima),
+                    sandwiches(fromDay + 1, toDay, 0, sandwichOrders, sandwichDeliveryMaxima)
             );
-        }
-    }
-
-    class SandwichResult {
-        public int finalRunLength;
-        public int numberSandwichesDelivered;
-        public SandwichResult(int finalRunLength, int numberSandwichesDelivered) {
-            this.finalRunLength = finalRunLength;
-            this.numberSandwichesDelivered = numberSandwichesDelivered;
-        }
     }
 }
 
