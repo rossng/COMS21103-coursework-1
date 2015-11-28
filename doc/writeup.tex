@@ -97,7 +97,7 @@
 	
 	\item [4 c)] $\textsc{S}[1, 0]$
 	
-	\item [4 f)] TODO
+	\item [4 f)] The time complexity should be $O(n^2)$. The \texttt{memory} matrix is of dimension $n \times (n+1)$. The algorithm essentially will never have to do more computation than filling this matrix---everything else is constant-time or $O(n^2)$ at worst.
 	
 	\item [4 g)] Mostly converted to tail call recursion (\texttt{IterativeMostSandwichesDeliverableCalculator::sandwiches}) and iteration (\texttt{IterativeMostSandwichesDeliverableCalculator::sandwichesIterative}), but can't figure out how to handle the multiple recursion in \texttt{max()}.
 	
